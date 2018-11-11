@@ -1,31 +1,26 @@
-WordPress Database
-==================
+View
+====
 
 ## Installation
 
 ```
-composer require wplibs/database
+composer require wplibs/view
 ```
 
-## Basic Example
+## Usage
 
 ```php
 <?php
 
-use WPLibs\Database\Database;
+use WPLibs\View\Factory;
 
-$builder = Database::newQuery()->select( '*' )->from( 'posts' );
+$view_factory = Factory::create([
+    'paths' => [
+        get_stylesheet_directory() . '/custom-templates',
+        get_template_directory() . '/custom-templates',
+        '/path-to-plugin-dir/templates',
+    ]
+]);
 
-var_dump( $posts = $builder->get() );
-
-var_dump( $builder->toSql() ); // select * from `{$wpdb->posts}`
+echo $view_factory->make('welcome.php', ['data' => 'value']);
 ```
-
-The query above can be shorten by this:
-
-```php
-$posts = Database::table( 'posts' )->get();
-```
-## Documents
-
-https://laravel.com/docs/5.4/queries
