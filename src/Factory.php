@@ -34,20 +34,18 @@ class Factory {
 
 		$factory = new static( $config['paths'] );
 
-		if ( in_array( 'twig', $config['engines'] ) ) {
-			$twig = $factory->create_twig_environment( $config['twig'] );
-
-			$twig->addExtension( new Twig\Extensions\WP_Twig_Extension );
-
-			$factory->set_twig( $twig );
-		}
-
 		$view = $factory->create_view(
-			$factory->create_engine_resolver( $config['engines'] )
+			$factory->create_engine_resolver( 'php' )
 		);
 
 		if ( in_array( 'twig', $config['engines'] ) ) {
+			$twig = $factory->create_twig_environment( $config['twig'] );
+
+			// Cache this twig instance.
+			$factory->set_twig( $twig );
+
 			$view->add_extension( 'twig', 'twig' );
+			$factory->register_twig_engine( $view->get_engine_resolver() );
 		}
 
 		return $view;
@@ -89,7 +87,11 @@ class Factory {
 			'auto_reload' => true,
 		] );
 
-		return new Twig_Environment( $loader, $options );
+		$twig = new Twig_Environment( $loader, $options );
+
+		$twig->addExtension( new Twig\Extensions\WP_Twig_Extension );
+
+		return $twig;
 	}
 
 	/**
@@ -113,7 +115,7 @@ class Factory {
 	 *
 	 * @param \WPLibs\View\Engine_Resolver $resolver
 	 */
-	protected function register_php_engine( Engine_Resolver $resolver ) {
+	public function register_php_engine( Engine_Resolver $resolver ) {
 		$resolver->register( 'php', function () {
 			return new Engines\Php_Engine;
 		} );
@@ -124,7 +126,7 @@ class Factory {
 	 *
 	 * @param \WPLibs\View\Engine_Resolver $resolver
 	 */
-	protected function register_twig_engine( Engine_Resolver $resolver ) {
+	public function register_twig_engine( Engine_Resolver $resolver ) {
 		$resolver->register( 'twig', function () {
 			return new Engines\Twig_Engine( $this->get_twig() );
 		} );
