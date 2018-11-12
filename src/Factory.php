@@ -39,12 +39,12 @@ class Factory {
 		);
 
 		if ( in_array( 'twig', $config['engines'] ) ) {
-			$twig = $factory->create_twig_environment( $config['twig'] );
-
-			// Cache this twig instance.
-			$factory->set_twig( $twig );
+			$factory->set_twig(
+				$factory->create_twig_environment( $config['twig'] )
+			);
 
 			$view->add_extension( 'twig', 'twig' );
+
 			$factory->register_twig_engine( $view->get_engine_resolver() );
 		}
 
