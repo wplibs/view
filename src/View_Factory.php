@@ -84,7 +84,7 @@ class View_Factory {
 	 * @param  string $empty
 	 * @return string
 	 */
-	public function render_each( $view, $data, $iterator, $empty = '' ) {
+	public function each( $view, $data, $iterator, $empty = '' ) {
 		$result = '';
 
 		// If is actually data in the array, we will loop through the data and append
