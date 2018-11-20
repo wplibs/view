@@ -59,7 +59,7 @@ class Php_Engine implements Engine {
 	 *
 	 * @throws mixed
 	 */
-	protected function handle_view_exception( \Exception $e, $ob_level ) {
+	protected function handle_view_exception( $e, $ob_level ) {
 		// In PHP7+, throw a FatalThrowableError when we catch an Error.
 		if ( $e instanceof \Error && class_exists( FatalThrowableError::class ) ) {
 			$e = new FatalThrowableError( $e );

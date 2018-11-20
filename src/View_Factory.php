@@ -65,14 +65,20 @@ class View_Factory {
 	 *
 	 * @param  string $view
 	 * @param  array  $data
-	 * @return \WPLibs\View\View
+	 * @return \WPLibs\View\View|null
 	 */
 	public function make( $view, $data = [] ) {
-		$path = $this->finder->find(
-			$view = $this->normalize_name( $view )
-		);
+		$view = $this->normalize_name( $view );
 
-		return $this->view_instance( $view, $path, $data );
+		try {
+			$path = $this->finder->find( $view );
+
+			return $this->view_instance( $view, $path, $data );
+		} catch ( \Exception $e ) {
+			trigger_error( $e->getMessage(), E_USER_WARNING ); // @codingStandardsIgnoreLine
+
+			return null;
+		}
 	}
 
 	/**
